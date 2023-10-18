@@ -1,54 +1,77 @@
-import { create, findAll, findByPk } from "../models/Expense";
+const { Expense } = require("../models");
 
-export function postData(req, res, next) {
-  // console.log(req.body, "post");
-  create(req.body)
-    .then((result) => {
-      res.json(result);
-    })
-    .catch((err) => {
-      res.json(err);
-    });
-}
+const getExpenses = async (req, res) => {
+  try {
+    const expenses = await Expense.findAll();
+    res.json(expenses);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
 
-export function getData(req, res, next) {
-  findAll()
-    .then((result) => {
-      // console.log("ressult>>>>>>>>", result);
-      res.json(result);
-    })
-    .catch((err) => {
-      res.json(err);
-    });
-}
+const getExpense = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const expense = await Expense.findByPk(id);
+    if (!expense) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+    res.json(expense);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
 
-export function deleteData(req, res, next) {
-  // console.log("delete id",req.params.id)
-  findByPk(req.params.id)
-    .then((result) => {
-      // console.log("ressult>>>>>>>>", result);
-      result.destroy();
-    })
-    .catch((err) => {
-      res.json(err);
-    });
-}
+const createExpense = async (req, res) => {
+  const { expense, description, price } = req.body;
+  try {
+    const newExpense = await Expense.create({ expense, description, price });
+    res.status(201).json(newExpense);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
 
-export function updateData(req, res, next) {
-  console.log("update id", req.params.id);
-  console.log("update body", req.body);
-  findByPk(req.params.id)
-    .then((result) => {
-      result.expense = req.body.expense;
-      result.description = req.body.description;
-      result.price = req.body.price;
-      // console.log("ressult>>>>>>>>", result);
-      return result.save();
-    })
-    .then((data) => {
-      res.json(data);
-    })
-    .catch((err) => {
-      res.json(err);
-    });
-}
+const updateExpense = async (req, res) => {
+  const { id } = req.params;
+  const { expense, description, price } = req.body;
+  try {
+    const expenseToUpdate = await Expense.findByPk(id);
+    if (!expenseToUpdate) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+    expenseToUpdate.expense = expense;
+    expenseToUpdate.description = description;
+    expenseToUpdate.price = price;
+    await expenseToUpdate.save();
+    res.json(expenseToUpdate);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+const deleteExpense = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deleted = await Expense.destroy({ where: { id } });
+    if (!deleted) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+    res.json({ message: "Expense deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+module.exports = {
+  getExpenses,
+  getExpense,
+  createExpense,
+  updateExpense,
+  deleteExpense,
+};
