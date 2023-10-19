@@ -1,6 +1,6 @@
-const { Expense } = require("../models");
+import Expense from "../models/Expense.js";
 
-const getExpenses = async (req, res) => {
+export const getExpenses = async (req, res) => {
   try {
     const expenses = await Expense.findAll();
     res.json(expenses);
@@ -10,7 +10,7 @@ const getExpenses = async (req, res) => {
   }
 };
 
-const getExpense = async (req, res) => {
+export const getExpense = async (req, res) => {
   const { id } = req.params;
   try {
     const expense = await Expense.findByPk(id);
@@ -24,7 +24,7 @@ const getExpense = async (req, res) => {
   }
 };
 
-const createExpense = async (req, res) => {
+export const createExpense = async (req, res) => {
   const { expense, description, price } = req.body;
   try {
     const newExpense = await Expense.create({ expense, description, price });
@@ -35,7 +35,7 @@ const createExpense = async (req, res) => {
   }
 };
 
-const updateExpense = async (req, res) => {
+export const updateExpense = async (req, res) => {
   const { id } = req.params;
   const { expense, description, price } = req.body;
   try {
@@ -54,7 +54,7 @@ const updateExpense = async (req, res) => {
   }
 };
 
-const deleteExpense = async (req, res) => {
+export const deleteExpense = async (req, res) => {
   const { id } = req.params;
   try {
     const deleted = await Expense.destroy({ where: { id } });
@@ -66,12 +66,4 @@ const deleteExpense = async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
-};
-
-module.exports = {
-  getExpenses,
-  getExpense,
-  createExpense,
-  updateExpense,
-  deleteExpense,
 };

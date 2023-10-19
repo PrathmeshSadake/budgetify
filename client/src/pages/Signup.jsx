@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -26,9 +27,9 @@ const Signup = () => {
             Create a new account
           </h2>
         </div>
-        <form className='mt-8 space-y-6' onSubmit={handleSignup}>
+        <form className='mt-8 space-y-2' onSubmit={handleSignup}>
           <input type='hidden' name='remember' value='true' />
-          <div className='rounded-md shadow-sm -space-y-px'>
+          <div className='rounded-md shadow-sm space-y-4'>
             <div>
               <label htmlFor='email-address' className='sr-only'>
                 Email address
@@ -72,6 +73,14 @@ const Signup = () => {
             </button>
           </div>
         </form>
+        <div>
+          <p className='text-center'>
+            Already have an account?{" "}
+            <Link className='text-indigo-600' to={"/login"}>
+              Login
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

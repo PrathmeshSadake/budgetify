@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
-import sequelize from "./utils/database";
+import sequelize from "./utils/database.js";
+import authRoutes from "./routes/authRoutes.js";
+import expenseRoutes from "./routes/expenseRoutes.js";
 
 const app = express();
 
@@ -11,16 +13,20 @@ app.get("/", (req, res) => {
   res.send("Hello👋");
 });
 
-const PORT = process.env.PORT || 3000;
+app.use("/expenses", expenseRoutes);
+app.use("/auth", authRoutes);
+
+const PORT = process.env.PORT || 8080;
 
 sequelize
-  .sync()
-  .then((result) => {
-    app.listen(4000);
+  .authenticate()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(
+        `Database connection has been established successfully. Server listening on ${PORT}`
+      );
+    });
   })
   .catch((err) => {
-    console.log(err);
+    console.error("Unable to connect to the database:", err);
   });
-app.listen(PORT, () => {
-  console.log(`listening on ${PORT}`);
-});

@@ -6,9 +6,9 @@ import Expenses from "./pages/Expenses";
 const App = () => {
   return (
     <Routes>
-      <Route exact path='/' component={Expenses} />
-      <Route exact path='/login' component={Login} />
-      <Route exact path='/signup' component={Signup} />
+      <Route path='/' element={<Expenses />} />
+      <Route path='/login' element={<Login />} />
+      <Route path='/signup' element={<Signup />} />
     </Routes>
   );
 };

@@ -1,8 +1,9 @@
-const Sequelize = require("sequelize");
+import Sequelize from "sequelize";
 
-const sequelize = new Sequelize("node-practice", "root", "246810", {
+const sequelize = new Sequelize("budgetify", "root", "Prathmesh@04", {
+  host: "139.59.76.255", // Replace with your server's IP address
   dialect: "mysql",
-  host: "localhost",
+  logging: false, // Disable logging
 });
 
-module.exports = sequelize;
+export default sequelize;

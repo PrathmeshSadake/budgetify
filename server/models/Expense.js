@@ -1,7 +1,7 @@
 import { INTEGER, STRING } from "sequelize";
-import { define } from "../util/database";
+import sequelize from "../utils/database.js";
 
-const Expense = define("expenses", {
+const Expense = sequelize.define("expenses", {
   id: {
     type: INTEGER,
     autoIncrement: true,
