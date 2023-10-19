@@ -7,12 +7,12 @@ import {
   updateExpense,
   deleteExpense,
 } from "../controllers/expenseController.js";
-import protect from "../middlewares/auth.js";
+import verify from "../middlewares/auth.js";
 
 router.get("/", getExpenses);
 router.get("/:id", getExpense);
-router.post("/", createExpense);
-router.put("/:id", protect, updateExpense);
-router.delete("/:id", protect, deleteExpense);
+router.post("/", verify, createExpense);
+router.put("/:id", verify, updateExpense);
+router.delete("/:id", verify, deleteExpense);
 
 export default router;

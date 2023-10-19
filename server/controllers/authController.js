@@ -1,6 +1,8 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import sendPasswordResetEmail from "../utils/sendPasswordResetEmail.js";
+import generatePasswordResetToken from "../utils/generatePasswordResetToken.js";
 
 export const createUser = async (req, res) => {
   const { email, password } = req.body;
@@ -44,12 +46,12 @@ export const forgotPassword = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const token = generatePasswordResetToken(); // Implement this function to generate a secure random token
-    user.resetPasswordToken = token;
-    user.resetPasswordExpires = Date.now() + 3600000; // Token expires in an hour
-    await user.save();
+    const token = await generatePasswordResetToken();
+    console.log("Password Reset Token", token); // Implement this function to generate a secure random token
+    await User.create({ token, userId: user.id, isActive: true });
+    // await user.save();
 
-    await sendPasswordResetEmail(user.email, token); // Implement this function to send the reset password email
+    // await sendPasswordResetEmail(user.email, token); // Implement this function to send the reset password email
 
     res.json({ message: "Password reset email sent" });
   } catch (error) {
