@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import useRazorpay from "react-razorpay";
 
 const Expenses = () => {
   const [expense, setExpense] = useState("");
@@ -7,9 +8,43 @@ const Expenses = () => {
   const [price, setPrice] = useState("");
   const [expenses, setExpenses] = useState([]);
 
+  const [Razorpay] = useRazorpay();
+
+  const handlePayment = useCallback(async () => {
+    const order = await axios.post(
+      "http://localhost:8080/payment/create-order"
+    );
+
+    const options = {
+      key: "rzp_test_7Db7bFMnKZjUdl",
+      amount: "3000",
+      currency: "INR",
+      name: "Acme Corp",
+      description: "Test Transaction",
+      order_id: order.id,
+      handler: (res) => {
+        console.log(res);
+      },
+      prefill: {
+        name: "Piyush Garg",
+        email: "youremail@example.com",
+        contact: "9999999999",
+      },
+      notes: {
+        address: "Razorpay Corporate Office",
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+
+    const rzpay = new Razorpay(options);
+    rzpay.open();
+  }, [Razorpay]);
+
   const fetchExpenses = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/expenses", {
+      const response = await axios.get("http://localhost:8080/expenses", {
         headers: {
           "x-auth-token": localStorage.getItem("token"),
         },
@@ -24,11 +59,17 @@ const Expenses = () => {
     fetchExpenses();
   }, []);
 
+  console.log(expenses);
+
   const handleAddExpense = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return console.log("Login before creating expense");
+    }
     try {
       await axios.post(
-        "http://localhost:3000/expenses",
+        "http://localhost:8080/expenses",
         {
           expense,
           description,
@@ -133,6 +174,7 @@ const Expenses = () => {
           </tbody>
         </table>
       </div>
+      <button onClick={handlePayment}>Click</button>
     </div>
   );
 };

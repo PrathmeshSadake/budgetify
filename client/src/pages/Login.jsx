@@ -6,14 +6,17 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [token, setToken] = useState("");
+  console.log(token);
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/user/login", {
+      const response = await axios.post("http://localhost:8080/auth/login", {
         email,
         password,
       });
-      console.log(response.data);
+      localStorage.setItem("token", response.data.token);
+      setToken(response.data.token);
     } catch (error) {
       console.error(error);
     }
