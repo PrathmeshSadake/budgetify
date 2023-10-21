@@ -10,12 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "aws-sdk": "^2.1478.0",
     "axios": "^1.5.1",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-razorpay": "^2.0.1",
-    "react-router-dom": "^6.16.0"
+    "react-router-dom": "^6.16.0",
+    "react-to-print": "^2.14.15"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

@@ -20,6 +20,10 @@ const Expense = sequelize.define("expenses", {
     type: INTEGER,
     allowNull: false,
   },
+  userId: {
+    type: INTEGER,
+    allowNull: false,
+  },
 });
 
 export default Expense;
