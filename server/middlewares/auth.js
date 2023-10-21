@@ -11,7 +11,7 @@ const verify = (req, res, next) => {
   try {
     // Verify token
     const decoded = jwt.verify(token, "secret"); // Replace 'yourSecretKey' with your actual secret
-    console.log(decoded);
+    // console.log(decoded);
     // Add user from payload
     req.user = decoded;
     next();

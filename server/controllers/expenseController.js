@@ -1,10 +1,26 @@
-import { Sequelize } from "sequelize";
 import Expense from "../models/Expense.js";
 
 export const getExpenses = async (req, res) => {
+  const page = req.query.page || 1;
+  const limit = 1;
+  const offset = (page - 1) * limit;
+  const user = req.user;
+
   try {
-    const expenses = await Expense.findAll();
-    res.json(expenses);
+    const expenses = await Expense.findAndCountAll({
+      where: { userId: user.id },
+      limit,
+      offset,
+      order: [["createdAt", "ASC"]],
+    });
+
+    const totalPages = Math.ceil(expenses.count / limit);
+
+    res.json({
+      totalPages,
+      currentPage: page,
+      expenses: expenses.rows,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
@@ -32,7 +48,9 @@ export const getExpenseReport = async (req, res) => {
     return res.status(402).json({ message: "Requires a Premium Subscription" });
   }
   try {
-    const expenses = await Expense.findAll();
+    const expenses = await Expense.findAll({
+      where: { userId: user.id },
+    });
     const groupedByMonth = {};
     expenses.forEach((expense) => {
       const date = new Date(expense.createdAt);
@@ -69,9 +87,6 @@ export const getExpenseReport = async (req, res) => {
 export const createExpense = async (req, res) => {
   const { expense, description, price } = req.body;
   const user = req.user;
-
-  console.log(user.id);
-  console.log(typeof user.id);
 
   try {
     const newExpense = await Expense.create({

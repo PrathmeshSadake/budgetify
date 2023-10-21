@@ -1,65 +1,39 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import useRazorpay from "react-razorpay";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const Expenses = () => {
   const [expense, setExpense] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [expenses, setExpenses] = useState([]);
-
-  const [Razorpay] = useRazorpay();
-
-  const handlePayment = useCallback(async () => {
-    const order = await axios.post(
-      "http://localhost:8080/payment/create-order"
-    );
-
-    const options = {
-      key: "rzp_test_7Db7bFMnKZjUdl",
-      amount: "3000",
-      currency: "INR",
-      name: "Acme Corp",
-      description: "Test Transaction",
-      order_id: order.id,
-      handler: (res) => {
-        console.log(res);
-      },
-      prefill: {
-        name: "Piyush Garg",
-        email: "youremail@example.com",
-        contact: "9999999999",
-      },
-      notes: {
-        address: "Razorpay Corporate Office",
-      },
-      theme: {
-        color: "#3399cc",
-      },
-    };
-
-    const rzpay = new Razorpay(options);
-    rzpay.open();
-  }, [Razorpay]);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const fetchExpenses = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/expenses", {
-        headers: {
-          "x-auth-token": localStorage.getItem("token"),
-        },
-      });
-      setExpenses(response.data);
+      const response = await axios.get(
+        `http://localhost:8080/expenses?page=${currentPage}`,
+        {
+          headers: {
+            "x-auth-token": localStorage.getItem("token"),
+          },
+        }
+      );
+
+      setExpenses(response.data.expenses);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error(error);
     }
   };
-
   useEffect(() => {
     fetchExpenses();
-  }, []);
+  }, [currentPage]);
 
-  console.log(expenses);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   const handleAddExpense = async (e) => {
     e.preventDefault();
@@ -92,7 +66,7 @@ const Expenses = () => {
 
   return (
     <div className='min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4'>
-      <div className='w-full max-w-md'>
+      <div className='w-full max-w-2xl'>
         <form
           onSubmit={handleAddExpense}
           className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4'
@@ -161,6 +135,7 @@ const Expenses = () => {
               <th className='px-4 py-2'>Expense</th>
               <th className='px-4 py-2'>Description</th>
               <th className='px-4 py-2'>Price</th>
+              <th className='px-4 py-2'>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -169,12 +144,42 @@ const Expenses = () => {
                 <td className='border px-4 py-2'>{expense.expense}</td>
                 <td className='border px-4 py-2'>{expense.description}</td>
                 <td className='border px-4 py-2'>{expense.price}</td>
+                <td className='border px-4 py-2'>
+                  <button
+                    // onClick={() => handleUpdate(item.id)}
+                    className='text-blue-500 hover:text-blue-700'
+                  >
+                    <FontAwesomeIcon icon={faEdit} />
+                  </button>
+                  <button
+                    // onClick={() => handleDelete(item.id)}
+                    className='text-red-500 hover:text-red-700 ml-2'
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
+        <div className='flex justify-center my-4'>
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+            (page) => (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                className={`mx-2 px-4 py-2 rounded-lg ${
+                  currentPage === page
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-300"
+                }`}
+              >
+                {page}
+              </button>
+            )
+          )}
+        </div>
       </div>
-      <button onClick={handlePayment}>Click</button>
     </div>
   );
 };

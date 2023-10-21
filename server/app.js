@@ -20,7 +20,7 @@ User.hasMany(Expense);
 
 app.use("/expenses", expenseRoutes);
 app.use("/auth", authRoutes);
-app.use("/payment", paymentRoutes);
+app.use("/razorpay", paymentRoutes);
 
 const PORT = process.env.PORT || 8080;
 
