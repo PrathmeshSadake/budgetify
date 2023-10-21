@@ -27,6 +27,10 @@ export const getExpense = async (req, res) => {
 
 export const getExpenseReport = async (req, res) => {
   console.log("Getting expense report");
+  const user = req.user;
+  if (!user.isPro) {
+    return res.status(402).json({ message: "Requires a Premium Subscription" });
+  }
   try {
     const expenses = await Expense.findAll();
     const groupedByMonth = {};
