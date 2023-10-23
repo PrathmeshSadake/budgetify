@@ -18,8 +18,8 @@ app.get("/", (req, res) => {
 
 User.hasMany(Expense);
 
-app.use("/expenses", expenseRoutes);
 app.use("/auth", authRoutes);
+app.use("/expenses", expenseRoutes);
 app.use("/razorpay", paymentRoutes);
 
 const PORT = process.env.PORT || 8080;

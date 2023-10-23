@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import ReactToPrint from "react-to-print";
 
@@ -13,13 +14,22 @@ const ExpenseReport = () => {
   const [expensesByMonth, setExpensesByMonth] = useState([]);
 
   useEffect(() => {
-    // Fetch data from the backend API
-    fetch("http://localhost:8080/expenses/report")
-      .then((response) => response.json())
-      .then((data) => {
+    try {
+      const getExpenses = async () => {
+        const { data } = await axios.get(
+          "http://localhost:8080/expenses/report",
+          {
+            headers: {
+              "x-auth-token": localStorage.getItem("token"),
+            },
+          }
+        );
         setExpensesByMonth(data);
-      })
-      .catch((error) => console.error("Error fetching data:", error));
+      };
+      getExpenses();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   }, []);
 
   return (

@@ -41,6 +41,16 @@ export const loginUser = async (req, res) => {
   }
 };
 
+export const getCurrentUser = async (req, res) => {
+  if (req.user) {
+    const userWithoutPassword = { ...req.user };
+    delete userWithoutPassword.password;
+    res.json({ user: userWithoutPassword });
+  } else {
+    res.status(401).json({ message: "Unauthorized" });
+  }
+};
+
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
 

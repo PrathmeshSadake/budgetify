@@ -6,7 +6,7 @@ import useRazorpay from "react-razorpay";
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [orderId, setOrderId] = useState("");
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState(10000);
   const [Razorpay] = useRazorpay();
 
   useEffect(() => {
@@ -15,7 +15,7 @@ const Navbar = () => {
     if (token) {
       setIsLoggedIn(true);
     }
-  }, []);
+  }, [isLoggedIn]);
   const handleLogout = () => {
     // Function to handle logout
     localStorage.removeItem("token");
@@ -27,7 +27,12 @@ const Navbar = () => {
       const response = await axios.post(
         "http://localhost:8080/razorpay/orders",
         {
-          amount: 9900,
+          amount,
+        },
+        {
+          headers: {
+            "x-auth-token": localStorage.getItem("token"),
+          },
         }
       );
       setOrderId(response.data.id);
@@ -42,8 +47,10 @@ const Navbar = () => {
         order_id: orderId,
         handler: function (response) {
           if (response.razorpay_payment_id) {
-            axios.patch(
-              `http://localhost:8080/razorpay/${response.razorpay_payment_id}/upgradeToPro`,
+            console.log(localStorage.getItem("token"));
+            axios.put(
+              `http://localhost:8080/razorpay/upgradeToPro?payment_id=${response.razorpay_payment_id}`,
+              {},
               {
                 headers: {
                   "x-auth-token": localStorage.getItem("token"),
@@ -82,6 +89,12 @@ const Navbar = () => {
               >
                 Pro Version
               </button>
+              <Link
+                to={"/report"}
+                className='inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-indigo-800 hover:bg-white mt-4 lg:mt-0'
+              >
+                Download Report
+              </Link>
             </div>
           ) : (
             <div className='flex space-x-2'>

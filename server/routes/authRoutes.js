@@ -4,9 +4,12 @@ import {
   forgotPassword,
   loginUser,
   resetPassword,
+  getCurrentUser,
 } from "../controllers/authController.js";
+import verify from "../middlewares/auth.js";
 
 const router = express.Router();
+router.get("/current-user", verify, getCurrentUser);
 
 router.post("/signup", createUser);
 router.post("/login", loginUser);

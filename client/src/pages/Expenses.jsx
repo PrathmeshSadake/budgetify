@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 const Expenses = () => {
   const [expense, setExpense] = useState("");
@@ -10,7 +11,8 @@ const Expenses = () => {
   const [expenses, setExpenses] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const fetchExpenses = async () => {
+
+  const fetchExpenses = useCallback(async () => {
     try {
       const response = await axios.get(
         `http://localhost:8080/expenses?page=${currentPage}`,
@@ -26,7 +28,7 @@ const Expenses = () => {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [currentPage]);
   useEffect(() => {
     fetchExpenses();
   }, [currentPage]);
@@ -145,14 +147,23 @@ const Expenses = () => {
                 <td className='border px-4 py-2'>{expense.description}</td>
                 <td className='border px-4 py-2'>{expense.price}</td>
                 <td className='border px-4 py-2'>
-                  <button
-                    // onClick={() => handleUpdate(item.id)}
+                  <Link
+                    to={`/update-expense/${expense.id}`}
                     className='text-blue-500 hover:text-blue-700'
                   >
                     <FontAwesomeIcon icon={faEdit} />
-                  </button>
+                  </Link>
                   <button
-                    // onClick={() => handleDelete(item.id)}
+                    onClick={async () =>
+                      axios.delete(
+                        `http://localhost:8080/expenses/${expense.id}`,
+                        {
+                          headers: {
+                            "x-auth-token": localStorage.getItem("token"),
+                          },
+                        }
+                      )
+                    }
                     className='text-red-500 hover:text-red-700 ml-2'
                   >
                     <FontAwesomeIcon icon={faTrash} />

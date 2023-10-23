@@ -1,4 +1,5 @@
 import Expense from "../models/Expense.js";
+import User from "../models/User.js";
 
 export const getExpenses = async (req, res) => {
   const page = req.query.page || 1;
@@ -43,7 +44,12 @@ export const getExpense = async (req, res) => {
 
 export const getExpenseReport = async (req, res) => {
   console.log("Getting expense report");
-  const user = req.user;
+
+  const user = await User.findByPk(req.user.id);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
   if (!user.isPro) {
     return res.status(402).json({ message: "Requires a Premium Subscription" });
   }
