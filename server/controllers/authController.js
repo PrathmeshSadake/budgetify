@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-const dotenv = require("dotenv");
-dotenv.config();
+import "dotenv/config";
 import User from "../models/User.js";
 import sendPasswordResetEmail from "../utils/sendPasswordResetEmail.js";
 import generatePasswordResetToken from "../utils/generatePasswordResetToken.js";
