@@ -22,7 +22,7 @@ const UpdateExpenses = () => {
     const getExpense = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:8080/expenses/${id}`,
+          `${import.meta.env.VITE_BACKEND_URL}/expenses/${id}`,
           {
             headers: {
               "x-auth-token": localStorage.getItem("token"),
@@ -54,7 +54,7 @@ const UpdateExpenses = () => {
     }
     try {
       await axios.put(
-        `http://localhost:8080/expenses/${id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/expenses/${id}`,
         {
           expense,
           description,

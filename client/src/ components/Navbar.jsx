@@ -49,7 +49,11 @@ const Navbar = () => {
           if (response.razorpay_payment_id) {
             console.log(localStorage.getItem("token"));
             axios.put(
-              `http://localhost:8080/razorpay/upgradeToPro?payment_id=${response.razorpay_payment_id}`,
+              `${
+                import.meta.env.VITE_BACKEND_URL
+              }/razorpay/upgradeToPro?payment_id=${
+                response.razorpay_payment_id
+              }`,
               {},
               {
                 headers: {

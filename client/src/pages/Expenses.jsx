@@ -15,7 +15,7 @@ const Expenses = () => {
   const fetchExpenses = useCallback(async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/expenses?page=${currentPage}`,
+        `${import.meta.env.VITE_BACKEND_URL}/expenses?page=${currentPage}`,
         {
           headers: {
             "x-auth-token": localStorage.getItem("token"),
@@ -156,7 +156,9 @@ const Expenses = () => {
                   <button
                     onClick={async () =>
                       axios.delete(
-                        `http://localhost:8080/expenses/${expense.id}`,
+                        `${import.meta.env.VITE_BACKEND_URL}/expenses/${
+                          expense.id
+                        }`,
                         {
                           headers: {
                             "x-auth-token": localStorage.getItem("token"),
