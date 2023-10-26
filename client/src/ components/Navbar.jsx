@@ -25,7 +25,7 @@ const Navbar = () => {
   const handlePayment = useCallback(async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/razorpay/orders",
+        `${import.meta.env.VITE_BACKEND_URL}/razorpay/orders`,
         {
           amount,
         },

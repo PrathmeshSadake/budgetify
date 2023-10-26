@@ -9,10 +9,13 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/auth/signup", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/auth/signup`,
+        {
+          email,
+          password,
+        }
+      );
     } catch (error) {
       console.error(error);
     }

@@ -17,7 +17,7 @@ const ExpenseReport = () => {
     try {
       const getExpenses = async () => {
         const { data } = await axios.get(
-          "http://localhost:8080/expenses/report",
+          `${import.meta.env.VITE_BACKEND_URL}/expenses/report`,
           {
             headers: {
               "x-auth-token": localStorage.getItem("token"),

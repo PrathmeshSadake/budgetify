@@ -45,7 +45,7 @@ const Expenses = () => {
     }
     try {
       await axios.post(
-        "http://localhost:8080/expenses",
+        `${import.meta.env.VITE_BACKEND_URL}/expenses`,
         {
           expense,
           description,
