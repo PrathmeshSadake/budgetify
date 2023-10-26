@@ -1,4 +1,6 @@
 import sgMail from "@sendgrid/mail";
+const dotenv = require("dotenv");
+dotenv.config();
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendPasswordResetEmail = async (email, token) => {

@@ -1,5 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+const dotenv = require("dotenv");
+dotenv.config();
 import User from "../models/User.js";
 import sendPasswordResetEmail from "../utils/sendPasswordResetEmail.js";
 import generatePasswordResetToken from "../utils/generatePasswordResetToken.js";
@@ -28,9 +30,13 @@ export const loginUser = async (req, res) => {
     } else {
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (isPasswordValid) {
-        const token = jwt.sign({ email: user.email, id: user.id }, "secret", {
-          expiresIn: "1h",
-        });
+        const token = jwt.sign(
+          { email: user.email, id: user.id },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: "1h",
+          }
+        );
         res.status(200).json({ message: "Authentication successful", token });
       } else {
         res.status(401).json({ error: "Invalid credentials" });
